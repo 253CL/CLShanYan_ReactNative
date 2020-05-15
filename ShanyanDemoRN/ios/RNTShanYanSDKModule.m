@@ -14,16 +14,11 @@
 
 
 @interface RNTShanYanSDKModule ()
-
 @end
 
 @implementation RNTShanYanSDKModule
 
-
-
-
 RCT_EXPORT_MODULE();
-
 
 RCT_EXPORT_METHOD(init:(NSString *)appId complete:(RCTResponseSenderBlock)complete)
 {
@@ -80,7 +75,7 @@ RCT_EXPORT_METHOD(preGetPhonenumber:(RCTResponseSenderBlock)complete){
 }
 
 - (NSArray<NSString *> *)supportedEvents{
-  return @[@"onReceiveAuthPageEvent"];
+  return @[@"onReceiveAuthPageEvent", @"oneKeyLoginListener"];
 }
 
 RCT_EXPORT_METHOD(quickAuthLoginOpenLoginAuthListener:(RCTResponseSenderBlock)oneKeyLoginListener){
@@ -130,10 +125,14 @@ RCT_EXPORT_METHOD(quickAuthLoginOpenLoginAuthListener:(RCTResponseSenderBlock)on
            return ;
          }
 
+         // 允许 登录按钮 多次点击时用此回调
+         //[self sendEventWithName:@"oneKeyLoginListener" body:@[completeResult.error,result]];
          if (oneKeyLoginListener) {
            oneKeyLoginListener(@[completeResult.error,result]);
          }
        } else {
+         // 允许 登录按钮 多次点击时用此回调
+         //[self sendEventWithName:@"oneKeyLoginListener" body:@[[NSNull null],result]];
          if (oneKeyLoginListener) {
           oneKeyLoginListener(@[[NSNull null],result]);
          }
@@ -174,6 +173,31 @@ closeAuthPage:(RCTResponseErrorBlock)authPageClosedBlock){
     }];
   });
 }
+
+RCT_EXPORT_METHOD(hideLoading)
+{
+  [CLShanYanSDKManager hideLoading];
+}
+
+RCT_EXPORT_METHOD(setAuthPageActionListener:(RCTResponseSenderBlock)actionListener)
+{
+  [CLShanYanSDKManager setCLShanYanSDKManagerDelegate:self];
+}
+
+-(void)clShanYanActionListener:(NSInteger)type code:(NSInteger)code  message:(NSString *_Nullable)message{
+  NSMutableDictionary * result = [NSMutableDictionary new];
+
+  result[@"type"] = @(type);
+  result[@"code"] = @(code);
+  result[@"message"] = message;
+  [self sendEventWithName:@"onReceiveAuthPageEvent" body:result];
+}
+
+
+
+
+
+
 
 #pragma mark - 样式4：横竖屏两套布局样式
 - (CLUIConfigure *)configureStyle4:(CLUIConfigure *)inputConfigure{
@@ -256,8 +280,6 @@ closeAuthPage:(RCTResponseErrorBlock)authPageClosedBlock){
     baseUIConfigure.clSlogaTextAlignment = @(NSTextAlignmentCenter);
 
     __weak typeof(self) weakSelf = self;
-
-
 
     baseUIConfigure.customAreaView = ^(UIView * _Nonnull customAreaView) {
         __strong typeof(weakSelf) strongSelf = weakSelf;

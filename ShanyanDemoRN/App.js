@@ -31,17 +31,25 @@ const nativeEventEmitter = new NativeEventEmitter(shanYanSDKModule);
 const onReceiveAuthPageEventSubscription = nativeEventEmitter.addListener(
   'onReceiveAuthPageEvent',
   result => {
-    if (result[0]) {
-      alert(JSON.stringify(result[0]));
-    } else {
-      alert(JSON.stringify(result[1]));
-    }
+    // if (result[0]) {
+    //   alert(JSON.stringify(result[0]));
+    // } else {
+    //   alert(JSON.stringify(result[1]));
+    // }
+    alert(JSON.stringify(result));
   },
+);
+const oneKeyLoginListenerEventSubscription = nativeEventEmitter.addListener(
+    'oneKeyLoginListener',
+    result => {
+      alert(JSON.stringify(result));
+    },
 );
 
 //取消订阅
 function componentWillUnmount() {
   onReceiveAuthPageEventSubscription.remove();
+  oneKeyLoginListenerEventSubscription.remove();
 }
 
 //初始化
@@ -102,13 +110,23 @@ function login() {
       if (error) {
         alert('一键登录失败：' + JSON.stringify(error));
       } else {
-        // 一键登录成功后关闭授权页面
-        shanYanSDKModule.closeAuthPage((error)=>{
+        //一键登录成功后关闭授权页面
+        shanYanSDKModule.closeAuthPage((error) => {
           alert('一键登录成功：' + JSON.stringify(result));
         });
       }
     });
   }
+}
+
+function actionListener() {
+  shanYanSDKModule.setAuthPageActionListener((err, result) => {
+    // let type = result['type'];
+    // let code = result['code'];
+    // let message = result['message'];
+    alert(JSON.stringify(result));
+    // console.log('type=' + type + '|code=' + code + '|message=' + message);
+  });
 }
 
 const styles = StyleSheet.create({
@@ -199,6 +217,7 @@ export default class App extends React.Component {
         <Button title="设置授权页样式" onPress={() => setAuthThemeConfig()} />
 
         <Button title="拉起授权页" onPress={() => login()} />
+        <Button title="控件点击回调" onPress={() => actionListener()} />
       </View>
     );
   }

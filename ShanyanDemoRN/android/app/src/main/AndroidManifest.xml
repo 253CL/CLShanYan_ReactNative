@@ -15,6 +15,7 @@
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
+      android:usesCleartextTraffic="true"
       android:theme="@style/AppTheme">
       <activity
         android:name=".MainActivity"
@@ -27,26 +28,28 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-        <!--  **********************联通授权页activity**************************-->
         <activity
-                android:name="com.sdk.mobile.manager.login.cucc.OauthActivity"
+                android:name="com.chuanglan.shanyan_sdk.view.CmccLoginActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
                 android:launchMode="singleTop"
-                android:configChanges="keyboardHidden|orientation|screenSize" />
-        <!--  **********************移动授权页activity**************************-->
-        <activity
+                android:screenOrientation="behind"/>
+
+        <activity-alias
                 android:name="com.cmic.sso.sdk.activity.LoginAuthActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
                 android:launchMode="singleTop"
-                android:configChanges="keyboardHidden|orientation|screenSize" />
-        <!--  **********************电信授权页activity**************************-->
+                android:screenOrientation="behind"
+                android:targetActivity="com.chuanglan.shanyan_sdk.view.CmccLoginActivity"/>
         <activity
                 android:name="com.chuanglan.shanyan_sdk.view.ShanYanOneKeyActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
                 android:launchMode="singleTop"
-                android:configChanges="keyboardHidden|orientation|screenSize" />
-        <!--  **********************协议页activity**************************-->
+                android:screenOrientation="behind"/>
         <activity
                 android:name="com.chuanglan.shanyan_sdk.view.CTCCPrivacyProtocolActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
                 android:launchMode="singleTop"
-                android:configChanges="keyboardHidden|orientation|screenSize" />
+                android:screenOrientation="behind"/>
     </application>
 
 </manifest>
